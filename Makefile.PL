@@ -8,9 +8,11 @@ WriteMakefile(
 	LICENSE          => 'perl_5',
 	MIN_PERL_VERSION => '5.016',
 	PREREQ_PM        => {
-		'Time::HiRes' => 0,
-		'Exporter'    => 0,
-		'Fcntl'       => 0,
+		'Crypt::SysRandom' => '0.007',
+		'Time::HiRes'      => 0,
+	},
+	TEST_REQUIRES => {
+		'Test::More' => '0.88',
 	},
 	META_MERGE => {
 		'meta-spec' => { version => 2 },
