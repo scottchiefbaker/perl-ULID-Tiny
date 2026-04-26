@@ -45,7 +45,6 @@ Key properties:
     Generate a new ULID string. Options:
 
     - `time` - Specify timestamp in milliseconds. Defaults to current time.
-    - `unique` - Generates a completely random ULID (no monotonic incrementing) even within the same millisecond.
     - `binary` - Returns the raw 16-byte binary ULID instead of an alpha-numeric string.
 
 - **ulid\_date($ulid\_string)**

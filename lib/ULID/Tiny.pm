@@ -333,8 +333,6 @@ Generate a new ULID string. Options:
 
 =item * C<time> - Specify timestamp in milliseconds. Defaults to current time.
 
-=item * C<unique> - Generates a completely random ULID (no monotonic incrementing) even within the same millisecond.
-
 =item * C<binary> - Returns the raw 16-byte binary ULID instead of an alpha-numeric string.
 
 =back
