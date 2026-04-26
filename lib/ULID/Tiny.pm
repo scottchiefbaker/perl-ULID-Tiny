@@ -295,8 +295,9 @@ ULID::Tiny - A lightweight ULID (Universally Unique Lexicographically Sortable I
 
 =head1 DESCRIPTION
 
-ULID::Tiny is a minimal, dependency-light Perl module for generating ULIDs
-as defined by L<https://github.com/ulid/spec>.
+ULID::Tiny is a minimal, dependency-light Perl module for generating ULIDs.
+
+https://github.com/ulid/spec
 
 A ULID is a 128-bit identifier consisting of:
 
@@ -314,37 +315,36 @@ Key properties:
 
 =item * Lexicographically sortable
 
-=item * Canonically encoded as a 26-character Crockford Base32 string
+=item * Canonically encoded as a 26 character string
 
 =item * Monotonically increasing within the same millisecond
 
-=item * 1.21e+24 unique ULIDs per millisecond
-
 =back
 
-=head1 FUNCTIONS
+=head1 METHODS
 
-=head2 ulid(%opts)
+=over 4
+
+=item B<ulid(%opts)>
 
 Generate a new ULID string. Options:
 
 =over 4
 
-=item * C<time> - Epoch timestamp in milliseconds. Defaults to current time.
+=item * C<time> - Specify timestamp in milliseconds. Defaults to current time.
 
-=item * C<unique> - If true, generates a completely random ULID (no monotonic incrementing) even within the same millisecond.
+=item * C<unique> - Generates a completely random ULID (no monotonic incrementing) even within the same millisecond.
 
-=item * C<binary> - If true, returns the raw 16-byte binary ULID instead of a string.
+=item * C<binary> - Returns the raw 16-byte binary ULID instead of an alpha-numeric string.
 
 =back
 
-ULIDs generated within the same millisecond are monotonically incremented
-(per the ULID spec) to guarantee sort order and uniqueness within a process.
-
-=head2 ulid_date($ulid_string)
+=item B<ulid_date($ulid_string)>
 
 Extract the timestamp from a ULID string. Returns the number of milliseconds
 since the Unix epoch.
+
+=back
 
 =head1 RANDOMNESS
 
@@ -352,11 +352,11 @@ The module attempts to use the best available entropy source:
 
 =over 4
 
-=item 1. C<getrandom(2)> syscall (Linux)
+=item * C<getrandom(2)> syscall on Linux
 
-=item 2. C</dev/urandom>
+=item * C</dev/urandom>
 
-=item 3. Perl's C<rand()> as a last resort
+=item * Perl's C<rand()> as a last resort
 
 =back
 

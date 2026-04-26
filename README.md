@@ -22,8 +22,9 @@ my $bytes = ulid(binary => 1);
 
 ## Description
 
-ULID::Tiny is a minimal, dependency-light Perl module for generating ULIDs
-as defined by [https://github.com/ulid/spec](https://github.com/ulid/spec).
+ULID::Tiny is a minimal, dependency-light Perl module for generating ULIDs.
+
+https://github.com/ulid/spec
 
 A ULID is a 128-bit identifier consisting of:
 
@@ -33,35 +34,31 @@ A ULID is a 128-bit identifier consisting of:
 Key properties:
 
 - Lexicographically sortable
-- Canonically encoded as a 26-character Crockford Base32 string
+- Canonically encoded as a 26 character string
 - Monotonically increasing within the same millisecond
-- 1.21e+24 unique ULIDs per millisecond
 
-## Functions
+## Methods
 
-### Ulid(%Opts)
+- **ulid(%opts)**
 
-Generate a new ULID string. Options:
+    Generate a new ULID string. Options:
 
-- `time` - Epoch timestamp in milliseconds. Defaults to current time.
-- `unique` - If true, generates a completely random ULID (no monotonic incrementing) even within the same millisecond.
-- `binary` - If true, returns the raw 16-byte binary ULID instead of a string.
+    - `time` - Specify timestamp in milliseconds. Defaults to current time.
+    - `unique` - Generates a completely random ULID (no monotonic incrementing) even within the same millisecond.
+    - `binary` - Returns the raw 16-byte binary ULID instead of an alpha-numeric string.
 
-ULIDs generated within the same millisecond are monotonically incremented
-(per the ULID spec) to guarantee sort order and uniqueness within a process.
+- **ulid\_date($ulid\_string)**
 
-### Ulid\_Date($Ulid\_String)
-
-Extract the timestamp from a ULID string. Returns the number of milliseconds
-since the Unix epoch.
+    Extract the timestamp from a ULID string. Returns the number of milliseconds
+    since the Unix epoch.
 
 ## Randomness
 
 The module attempts to use the best available entropy source:
 
-- 1. `getrandom(2)` syscall (Linux)
-- 2. `/dev/urandom`
-- 3. Perl's `rand()` as a last resort
+- `getrandom(2)` syscall on Linux
+- `/dev/urandom`
+- Perl's `rand()` as a last resort
 
 ## Version
 
