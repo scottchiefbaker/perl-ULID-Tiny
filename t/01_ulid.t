@@ -6,7 +6,7 @@ use v5.16;
 
 use Test::More;
 use lib 'lib';
-use ULID::Tiny qw(:all);
+use ULID::Tiny;
 
 ###############################################################################
 # Module loading
