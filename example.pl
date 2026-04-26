@@ -13,7 +13,7 @@ print "Monotonically increasing ULIDs:\n";
 
 # Generate a ULID and inspect it
 for (1 .. 5) {
-	my $id = ulid(%opts);
+	my $id = ulid();
 	say "Generated: $id";
 }
 
