@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use v5.16;
 
+use Crypt::SysRandom qw(random_bytes);
 use Time::HiRes qw(time);
 use Fcntl qw(O_RDONLY);
 
@@ -30,7 +31,7 @@ sub ulid {
 		$ts = _unixtime_ms_48bit();
 	}
 
-	my $rand = _get_random_bytes(10);
+	my $rand = random_bytes(10);
 	my $ret  = '';
 
 	state $prev_ts   = 0;
@@ -185,96 +186,14 @@ sub _encode_timestamp {
     return pack("H*", sprintf("%012X", int($epoch_ms)));
 }
 
-###############################################################################
-# Random number generation
-###############################################################################
-
-# Get a string of random bytes using the best available source
-sub _get_random_bytes {
-    my ($len) = @_;
-
-    if ($len <= 0) {
-		die "length must be positive";
-	}
-
-    # 1. Try getrandom() syscall
-    my $buf = _try_getrandom($len);
-    if (defined $buf && length($buf) == $len) {
-		return $buf;
-	}
-
-    # 2. Fallback to /dev/urandom
-	if (-r "/dev/urandom") {
-		return _read_urandom($len);
-	}
-
-	# 3. Last resort: Perl's rand()
-	return _perl_random_bytes($len);
-}
-
-sub _try_getrandom {
-    my ($len) = @_;
-
-    # syscall() is not available on all platforms (e.g. Windows)
-    my $ret = eval {
-        my $sys = 318;
-        my $buf = "\0" x $len;
-
-        # flags = 0 (blocking, high quality entropy)
-        my $rc = syscall($sys, $buf, $len, 0);
-
-        if (!defined $rc || $rc < 0) {
-            return undef;
-        }
-
-        return substr($buf, 0, $len);
-    };
-
-    return $ret;
-}
-
-sub _read_urandom {
-    my ($len) = @_;
-
-    sysopen(my $fh, '/dev/urandom', O_RDONLY) or die "open /dev/urandom: $!";
-
-    my $buf = '';
-    my $got = read($fh, $buf, $len);
-
-    close $fh;
-
-	if ($got != $len) {
-		die "short read from /dev/urandom";
-	}
-
-    return $buf;
-}
-
-sub _perl_random_bytes {
-	my $num = shift();
-
-	my $octets_needed = $num / 4;
-
-	my $ret = "";
-	for (my $i = 0; $i < $octets_needed; $i++) {
-		my $num = int(rand() * 2**32 - 1);
-
-		# Convert the integer into a 4 byte string
-		$ret .= pack("L", $num);
-	}
-
-	$ret = substr($ret, 0, $num);
-
-	return $ret;
-}
-
 1;
 
 __END__
 
 =head1 NAME
 
-ULID::Tiny - A lightweight ULID (Universally Unique Lexicographically Sortable Identifier) generator
+ULID::Tiny - A lightweight ULID (Universally Unique Lexicographically Sortable
+Identifier) generator
 
 =head1 SYNOPSIS
 
@@ -333,7 +252,8 @@ Generate a new ULID string. Options:
 
 =item * C<time> - Specify timestamp in milliseconds. Defaults to current time.
 
-=item * C<binary> - Returns the raw 16-byte binary ULID instead of an alpha-numeric string.
+=item * C<binary> - Returns the raw 16-byte binary ULID instead of an
+alpha-numeric string.
 
 =back
 
@@ -346,17 +266,8 @@ since the Unix epoch.
 
 =head1 RANDOMNESS
 
-The module attempts to use the best available entropy source:
-
-=over 4
-
-=item * C<getrandom(2)> syscall on Linux
-
-=item * C</dev/urandom>
-
-=item * Perl's C<rand()> as a last resort
-
-=back
+The module uses C<Crypt::SysRandom> to get the best source of cryptographic
+entropy
 
 =head1 VERSION
 
