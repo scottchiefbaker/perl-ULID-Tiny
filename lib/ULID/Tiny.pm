@@ -11,9 +11,8 @@ use Exporter 'import';
 
 our $VERSION = '1.0.0';
 
-our @EXPORT      = qw(ulid);
-our @EXPORT_OK   = qw(ulid ulid_date);
-our %EXPORT_TAGS = (all => \@EXPORT_OK);
+our @EXPORT    = qw(ulid ulid_date);
+our @EXPORT_OK = qw(ulid ulid_date);
 
 my @CROCKFORD_CHARS = split //, '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 
