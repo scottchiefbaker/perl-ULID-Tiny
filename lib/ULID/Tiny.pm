@@ -295,7 +295,8 @@ ULID::Tiny - A lightweight ULID (Universally Unique Lexicographically Sortable I
 
 =head1 DESCRIPTION
 
-ULID::Tiny is a minimal, dependency-light Perl module for generating ULIDs.
+ULID::Tiny is a minimal, pure Perl, dependency-light module for generating
+ULIDs.
 
 https://github.com/ulid/spec
 

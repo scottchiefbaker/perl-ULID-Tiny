@@ -22,7 +22,8 @@ my $bytes = ulid(binary => 1);
 
 ## Description
 
-ULID::Tiny is a minimal, dependency-light Perl module for generating ULIDs.
+ULID::Tiny is a minimal, pure Perl, dependency-light module for generating
+ULIDs.
 
 https://github.com/ulid/spec
 
