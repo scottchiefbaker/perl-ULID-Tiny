@@ -9,24 +9,22 @@ Identifier) generator
 use ULID::Tiny qw(ulid ulid_date);
 
 # Generate a new ULID
-my $id = ulid(); # e.g. "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+my $ulid = ulid(); # e.g. "01ARZ3NDEKTSV4RRFFQ69G5FAV"
 
-# Generate a ULID with a specific timestamp (milliseconds since epoch)
-my $id = ulid(time => 1234567890000);
+# Generate a ULID using a specific timestamp (milliseconds since epoch)
+my $ulid = ulid(time => 1234567890000);
+
+# Generate a raw, 16 byte, binary ULID
+my $bytes = ulid(binary => 1);
 
 # Extract the timestamp from a ULID (returns milliseconds since epoch)
-my $ms = ulid_date($id);
-
-# Generate a ULID in raw 16-byte binary form
-my $bytes = ulid(binary => 1);
+my $ms = ulid_date($ulid);
 ```
 
 ## Description
 
 ULID::Tiny is a minimal, pure Perl, dependency-light module for generating
 ULIDs.
-
-https://github.com/ulid/spec
 
 A ULID is a 128-bit identifier consisting of:
 
@@ -38,6 +36,8 @@ Key properties:
 - Lexicographically sortable
 - Canonically encoded as a 26 character string
 - Monotonically increasing within the same millisecond
+
+https://github.com/ulid/spec
 
 ## Methods
 
@@ -53,15 +53,6 @@ Key properties:
 
     Extract the timestamp from a ULID string. Returns the number of milliseconds
     since the Unix epoch.
-
-## Randomness
-
-The module uses `Crypt::SysRandom` to get the best source of cryptographic
-entropy
-
-## Version
-
-1.0.0
 
 ## License
 
