@@ -171,6 +171,30 @@ eval { ulid_date(undef) };
 like($@, qr/Invalid ULID/, 'ulid_date() rejects undef');
 
 ###############################################################################
+# Invalid Crockford character handling
+###############################################################################
+
+{
+	eval { ULID::Tiny::_crockford_decode_int("0000000!00") };
+	like($@, qr/Invalid Crockford character/, '_crockford_decode_int() dies on invalid character');
+
+	eval { ULID::Tiny::_crockford_decode_bits("0000000!00") };
+	like($@, qr/Invalid Crockford character/, '_crockford_decode_bits() dies on invalid character');
+}
+
+###############################################################################
+# Lower-case input is accepted (case-insensitive via uc())
+###############################################################################
+
+{
+	my $ts  = 1700000000000;
+	my $id  = ulid(time => $ts);
+	my $lc  = lc($id);
+	my $got = ulid_date($lc);
+	is($got, $ts, 'ulid_date() handles lower-case ULID input correctly');
+}
+
+###############################################################################
 
 done_testing();
 

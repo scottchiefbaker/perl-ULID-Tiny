@@ -15,6 +15,8 @@ our @EXPORT    = qw(ulid ulid_date);
 our @EXPORT_OK = qw(ulid ulid_date);
 
 my @CROCKFORD_CHARS = split //, '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+my %CROCKFORD_VAL;
+@CROCKFORD_VAL{@CROCKFORD_CHARS} = (0 .. $#CROCKFORD_CHARS);
 
 ###############################################################################
 # Public API
@@ -79,20 +81,13 @@ sub ulid_date {
 sub _crockford_increment {
     my ($str) = @_;
 
-    state %val;
-
-	# Build the reverse mapping table (once)
-	if (!scalar(%val)) {
-		@val{@CROCKFORD_CHARS} = (0..$#CROCKFORD_CHARS);
-	}
-
     my @out   = reverse split //, uc($str);
     my $carry = 1;
 
     for my $i (0 .. $#out) {
         last unless $carry;
 
-        my $v  = $val{$out[$i]};
+        my $v  = $CROCKFORD_VAL{$out[$i]};
         $v    += $carry;
 
         if ($v >= 32) {
@@ -113,7 +108,7 @@ sub _crockford_increment {
 	# Per the ULID spec the maximum valid ULID is 7ZZZZZZZZZZZZZZZZZZZZZZZZZ.
 	# 26 Crockford chars encode 130 bits but ULID is only 128 bits, so the
 	# first character must not exceed '7' (value 7, binary 00111).
-	if ($val{ substr($result, 0, 1) } > 7) {
+	if ($CROCKFORD_VAL{ substr($result, 0, 1) } > 7) {
 		die "ULID monotonic overflow: cannot increment beyond the maximum ULID value";
 	}
 
@@ -146,14 +141,9 @@ sub _crockford_encode {
 sub _crockford_decode_int {
     my ($str) = @_;
 
-    state %val;
-	if (!scalar(%val)) {
-		@val{@CROCKFORD_CHARS} = (0..$#CROCKFORD_CHARS);
-	}
-
     my $n = 0;
     for my $ch (split //, uc($str)) {
-        $n = $n * 32 + ($val{$ch} // die "Invalid Crockford character: $ch");
+        $n = $n * 32 + ($CROCKFORD_VAL{$ch} // die "Invalid Crockford character: $ch");
     }
 
     return $n;
@@ -163,14 +153,9 @@ sub _crockford_decode_int {
 sub _crockford_decode_bits {
     my ($str) = @_;
 
-    state %val;
-	if (!scalar(%val)) {
-		@val{@CROCKFORD_CHARS} = (0..$#CROCKFORD_CHARS);
-	}
-
     my $bits = '';
     for my $ch (split //, uc($str)) {
-        my $v = $val{$ch} // die "Invalid Crockford character: $ch";
+        my $v = $CROCKFORD_VAL{$ch} // die "Invalid Crockford character: $ch";
         $bits .= sprintf("%05b", $v);
     }
 
