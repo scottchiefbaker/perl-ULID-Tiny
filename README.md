@@ -1,6 +1,7 @@
 ## Name
 
-ULID::Tiny - A lightweight ULID (Universally Unique Lexicographically Sortable Identifier) generator
+ULID::Tiny - A lightweight ULID (Universally Unique Lexicographically Sortable
+Identifier) generator
 
 ## Synopsis
 
@@ -45,7 +46,8 @@ Key properties:
     Generate a new ULID string. Options:
 
     - `time` - Specify timestamp in milliseconds. Defaults to current time.
-    - `binary` - Returns the raw 16-byte binary ULID instead of an alpha-numeric string.
+    - `binary` - Returns the raw 16-byte binary ULID instead of an
+    alpha-numeric string.
 
 - **ulid\_date($ulid\_string)**
 
@@ -54,11 +56,8 @@ Key properties:
 
 ## Randomness
 
-The module attempts to use the best available entropy source:
-
-- `getrandom(2)` syscall on Linux
-- `/dev/urandom`
-- Perl's `rand()` as a last resort
+The module uses `Crypt::SysRandom` to get the best source of cryptographic
+entropy
 
 ## Version
 
