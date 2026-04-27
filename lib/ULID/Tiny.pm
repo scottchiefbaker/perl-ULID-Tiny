@@ -106,7 +106,7 @@ sub _crockford_increment {
     }
 
 	if ($carry) {
-		push(@out, '1');
+		die "ULID monotonic overflow: cannot increment beyond the maximum ULID value";
 	}
 
     return join('', reverse @out);
