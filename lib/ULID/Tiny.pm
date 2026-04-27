@@ -24,19 +24,14 @@ my @CROCKFORD_CHARS = split //, '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 sub ulid {
 	my (%opts) = @_;
 
-	my $ts;
-	if (defined($opts{time})) {
-		$ts = _encode_timestamp($opts{time});
-	} else {
-		$ts = _unixtime_ms_48bit();
-	}
-
+	my $time = $opts{time} // (time() * 1000);
+	my $ts   = _encode_timestamp($time);
 	my $rand = random_bytes(10);
-	my $ret  = '';
 
 	state $prev_ts   = 0;
 	state $prev_ulid = "";
 
+	my $ret = '';
 	if (!$opts{unique} && $prev_ts && ($ts eq $prev_ts)) {
 		$ret = _crockford_increment($prev_ulid);
 	} else {
@@ -174,16 +169,12 @@ sub _crockford_decode_bits {
     return $bits;
 }
 
-sub _unixtime_ms_48bit {
-    my $ms = int(time() * 1000);
-
-    return pack("H*", sprintf("%012X", $ms));
-}
-
 sub _encode_timestamp {
     my ($epoch_ms) = @_;
 
-    return pack("H*", sprintf("%012X", int($epoch_ms)));
+	my $ret = substr(pack("Q>", $epoch_ms), 2, 6);
+
+	return $ret;
 }
 
 1;
