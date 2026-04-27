@@ -151,18 +151,13 @@ is(scalar(keys %seen), $count, "$count ULIDs are all unique");
 ###############################################################################
 
 {
-	# Force overflow by monotonically incrementing from the maximum ULID value.
-	# The maximum ULID is 7ZZZZZZZZZZZZZZZZZZZZZZZZZ.
-	# We pass it as a fixed timestamp and seed $prev_ulid to the value just
-	# before the max so that the very next monotonic increment triggers overflow.
-	# We do this by generating a ULID at a never-before-used timestamp, then
-	# repeatedly calling ulid() at the same timestamp until the random portion
-	# rolls over.  Instead of that, we call the internal function directly via
-	# the package namespace.
-	# Z is the highest Crockford character (value 31); all Z's is the true maximum
-	my $max_ulid = 'ZZZZZZZZZZZZZZZZZZZZZZZZZZ';
+	# The maximum valid ULID per the spec is 7ZZZZZZZZZZZZZZZZZZZZZZZZZ.
+	# 26 Crockford chars = 130 bits, but ULID is 128 bits, so the first
+	# character is capped at '7' (value 7 = 0b00111, top 2 bits zero).
+	# Incrementing this value must raise an overflow error.
+	my $max_ulid = '7ZZZZZZZZZZZZZZZZZZZZZZZZZ';
 	eval { ULID::Tiny::_crockford_increment($max_ulid) };
-	like($@, qr/overflow/i, '_crockford_increment() dies on overflow of maximum ULID');
+	like($@, qr/overflow/i, '_crockford_increment() dies on overflow of maximum ULID (7ZZZZZZZZZZZZZZZZZZZZZZZZZ)');
 }
 
 ###############################################################################
