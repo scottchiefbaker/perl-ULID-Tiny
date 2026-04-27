@@ -6,7 +6,6 @@ use v5.16;
 
 use Crypt::SysRandom qw(random_bytes);
 use Time::HiRes qw(time);
-use Fcntl qw(O_RDONLY);
 
 use Exporter 'import';
 
