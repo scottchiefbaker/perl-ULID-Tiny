@@ -10,7 +10,7 @@ use Fcntl qw(O_RDONLY);
 
 use Exporter 'import';
 
-our $VERSION = '1.0.0';
+our $VERSION = '1.0.1';
 
 our @EXPORT    = qw(ulid ulid_date);
 our @EXPORT_OK = qw(ulid ulid_date);
