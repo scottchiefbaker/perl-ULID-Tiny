@@ -147,6 +147,20 @@ is(scalar(keys %seen), $count, "$count ULIDs are all unique");
 }
 
 ###############################################################################
+# Monotonic overflow
+###############################################################################
+
+{
+	# The maximum valid ULID per the spec is 7ZZZZZZZZZZZZZZZZZZZZZZZZZ.
+	# 26 Crockford chars = 130 bits, but ULID is 128 bits, so the first
+	# character is capped at '7' (value 7 = 0b00111, top 2 bits zero).
+	# Incrementing this value must raise an overflow error.
+	my $max_ulid = '7ZZZZZZZZZZZZZZZZZZZZZZZZZ';
+	eval { ULID::Tiny::_crockford_increment($max_ulid) };
+	like($@, qr/overflow/i, '_crockford_increment() dies on overflow of maximum ULID (7ZZZZZZZZZZZZZZZZZZZZZZZZZ)');
+}
+
+###############################################################################
 # Input validation
 ###############################################################################
 

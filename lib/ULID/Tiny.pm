@@ -105,10 +105,19 @@ sub _crockford_increment {
     }
 
 	if ($carry) {
-		push(@out, '1');
+		die "ULID monotonic overflow: cannot increment beyond the maximum ULID value";
 	}
 
-    return join('', reverse @out);
+	my $result = join('', reverse @out);
+
+	# Per the ULID spec the maximum valid ULID is 7ZZZZZZZZZZZZZZZZZZZZZZZZZ.
+	# 26 Crockford chars encode 130 bits but ULID is only 128 bits, so the
+	# first character must not exceed '7' (value 7, binary 00111).
+	if ($val{ substr($result, 0, 1) } > 7) {
+		die "ULID monotonic overflow: cannot increment beyond the maximum ULID value";
+	}
+
+	return $result;
 }
 
 sub _crockford_encode {
